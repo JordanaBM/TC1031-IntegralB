@@ -68,7 +68,7 @@ A[0] > A[1] > A[2] > A[3] == 3 > 7 > 8 > 9  no  → No intercambiamos, (3,7,8,9)
 
 **El array queda como (3,7,8,9)**
 
-#### Análisis asintótico
+### Análisis asintótico
 
 **Time Complexity**
 
@@ -77,5 +77,6 @@ La complejidad en el peor de los casos en O(n^2) <-- Cuadrática, donde el array
 La complejidad en el mejor de los casos es Ω(n*log n) <-- El tiempo sube linealmente mientras que el n sube exponencialmente.* Esto quiere decir que van a existir veces que en los gaps o no se realicen swaps, especialmente para cuando los datos ya están más o menos ordenamos. 
 
 **Space Complexity**
+
 La complejidad de espacio para el shell sort es O(1) <-- constante, ya que solo ocupamos el array o vector que se tiene y se realizan los swaps dentro del mismo .
 [Shell Sort Algorithm Programiz](https://www.programiz.com/dsa/shell-sort/)
