@@ -27,6 +27,7 @@ class Grafo{
 	int edgesMat;
 	int nodes;
     vector<string> municipios;
+	vector<float> distancias;
     vector <pair<int, float> > *adjList;
 
     public:
@@ -37,12 +38,19 @@ class Grafo{
     void creaMunicipios();
 	void creaEdges();
     void imprimeMunicipios();
+	void ciudadesMenosDist();
+	void ciudadesAlfabeticamente();
+
     //BFS
 	string BFS(int, int);
 	void bfsHelper(int, int, queue<int>&, list<int>&, vector<vector<int>>&,std::stringstream &aux,float suma);
 	//Print
 	string print_path(vector<vector<int>>&,int ,int);
     bool contains(list<int>, int);
+	//Nueva estructura
+	std:: vector<float> shellSortFloat(std::vector<float> v);
+	std:: vector<string> shellSortString(std::vector<string> v);
+	void swap(std::vector<float>&, int, int);
 
  
 };
@@ -91,42 +99,55 @@ void Grafo :: creaMunicipios(){
 void Grafo :: creaEdges(){
 	//Guanajuato-San Felipe
     addEdge(0, 1,83.7);
+	distancias.push_back(83.7);
 
     //Guanajuato-León
     addEdge(0, 2, 75);
+	distancias.push_back(75);
 
     //Guanajuato-Silao
     addEdge(0, 3, 41.4);
+	distancias.push_back(41.4);
     
     //Guanajuato-Irapuato
     addEdge(0, 5, 68.3);
+	distancias.push_back(68.3);
 
     //Guanajuato-Salamanca
     addEdge(0, 7, 68.6);
+	distancias.push_back(68.6);
 
     //Guanajuato-Dolores Hidalgo
     addEdge(0, 8, 60.2);
+	distancias.push_back(60.2);
 
     //San Felipe-León
     addEdge(1, 2, 95.3);
+	distancias.push_back(95.3);
 
     //Léon-Silao
     addEdge(2, 3, 43.9);
+	distancias.push_back(43.9);
 
     //Silao-Romita
     addEdge(3, 4, 13.8);
+	distancias.push_back(13.8);
 
     //Silao-Irapuato
     addEdge(3, 5, 40);
+	distancias.push_back(40);
 
     //Irapuato-Abasolo
     addEdge(5, 6, 33.1);
+	distancias.push_back(33.1);
 
     //Irapuato-Salamanca
     addEdge(5, 7, 22.4);
+	distancias.push_back(22.4);
 
     //Dolores Hidalgo-San Miguel de Allende
     addEdge(8, 9, 40.5);
+	distancias.push_back(40.5);
 }
 
 /*
@@ -184,6 +205,7 @@ void Grafo :: printGrafo()
         cout << "\n";
     }
 }
+
 
 
 /*
@@ -331,6 +353,138 @@ bool Grafo::contains(list<int> ls, int node){
 			return true;
 		else
 			return false;
+}
+
+std::vector<float> Grafo::shellSortFloat(std::vector<float> v) {
+	int n = v.size();
+	// Se inicia con un gap entre elementos grande y cada iteración se vuelve
+	// más pequeño
+    for (int gap = n/2; gap > 0; gap /= 2)
+    {
+        //Iremos realizando gap comparaciones con una gap separación 
+        for (int i = gap; i < n; i ++)
+        {
+            //Guardaremos una variable temporal en caso de realizar un swap
+            float temp = v[i];
+             
+			int j; 
+			//Realizamos un ciclo for donde se irá comparando el gap contra un 
+			// espaciado del tamaño del gap hacia la izquierda.
+			//Mientras el tamaño de j sea menor o igual al del gap 
+			//Y j va a ir decrementando lo del gap.          
+            for (j = i; j >= gap &v[j - gap] > temp; j -= gap)
+
+				//Si comprobamos que el temp es menor que el vector en la posición
+				// v[j - gap] entonces j(donde se ubica el gap) pasa a ser
+				// la posición  v[j - gap]
+				v[j] = v[j - gap];
+             
+            // Y ponemos al temp en su ubicación correcta v[j] (donde está el gap)
+			//Básicamente en un swap como se vió en la materia.
+   			 v[j] = temp;
+        }
+    }
+	vector <float> vec = v;
+	return vec;
+}
+
+void Grafo :: ciudadesMenosDist(){
+	//Ordenamos el vector con las ditancias que se inicializaron en addEdges
+	vector <float> distSort = shellSortFloat(distancias);
+
+	int v;
+    float km;
+	//Hacemos un recorrido en en el vector ordenado con ShellSort
+	for(int i = 0; i<distSort.size(); i++){
+		//Hacemos un recorrido en los nodos del hash
+		for (int u = 0; u < nodes; u++)
+		{	
+			//Iteramos cada nodo, para obtener sus datos
+			for (auto it = adjList[u].begin(); it!=adjList[u].end(); it++)
+			{
+				
+				//Si la distancia en el vector posición i es igual al iterador
+				// en su segundo apuntador
+				if(distSort[i] == it -> second)
+				{
+					//Significa que ya encontramos ese nodo con esa distancia entre ellos
+					cout << "Municipio: " << municipios[u] << " tiene un arco con \n";
+					v = it->first;
+					km = it->second;
+					cout << "\tMunicipio " << municipios[v] << " con distancia de = "
+					<< km << "km\n\n";	
+			    }
+						
+			}	
+		}
+	}
+
+}
+
+std::vector<string> Grafo::shellSortString(std::vector<string> v) {
+	int n = v.size();
+	// Se inicia con un gap entre elementos grande y cada iteración se vuelve
+	// más pequeño
+    for (int gap = n/2; gap > 0; gap /= 2)
+    {
+        //Iremos realizando gap comparaciones con una gap separación 
+        for (int i = gap; i < n; i ++)
+        {
+            //Guardaremos una variable temporal en caso de realizar un swap
+            string temp = v[i];
+             
+			int j; 
+			//Realizamos un ciclo for donde se irá comparando el gap contra un 
+			// espaciado del tamaño del gap hacia la izquierda.
+			//Mientras el tamaño de j sea menor o igual al del gap 
+			//Y j va a ir decrementando lo del gap.          
+            for (j = i; j >= gap &v[j - gap] > temp; j -= gap)
+
+				//Si comprobamos que el temp es menor que el vector en la posición
+				// v[j - gap] entonces j(donde se ubica el gap) pasa a ser
+				// la posición  v[j - gap]
+				v[j] = v[j - gap];
+             
+            // Y ponemos al temp en su ubicación correcta v[j] (donde está el gap)
+			//Básicamente en un swap como se vió en la materia.
+   			 v[j] = temp;
+        }
+    }
+	vector <string> vec = v;
+	return vec;
+}
+
+void Grafo :: ciudadesAlfabeticamente(){
+	//Ordenamos el vector con los municpios agregados en creaMunicipios()
+	vector <string> alfSort = shellSortString(municipios);
+
+	int v;
+    float km;
+	//Hacemos un recorrido en en el vector ordenado con ShellSort
+	for(int i = 0; i<alfSort.size(); i++){
+		//Hacemos un recorrido en los nodos del hash
+		for (int u = 0; u < nodes; u++)
+		{	
+			//Iteramos cada nodo, para obtener sus datos
+			for (auto it = adjList[u].begin(); it!=adjList[u].end(); it++)
+			{
+				
+				//Si el municipio ordenado alfabéticamente es igual a la ubicación
+				// del vector municipios
+				if(alfSort[i] == municipios[u])
+				{
+					//Significa que ya encontramos ese nodo que sigue alfabéticamente
+					cout << "Municipio: " << municipios[u] << " tiene un arco con \n";
+					v = it->first;
+					km = it->second;
+					cout << "\tMunicipio " << municipios[v] << " con distancia de = "
+					<< km << "km\n\n";	
+			    }
+						
+			}	
+		}
+	}
+
 }
 
 #endif /* Grafo_H_ */
